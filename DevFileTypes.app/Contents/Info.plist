@@ -1,0 +1,893 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleIdentifier</key>
+	<string>dev.devfiletypes.utideclarations</string>
+	<key>CFBundleName</key>
+	<string>DevFileTypes</string>
+	<key>CFBundleDisplayName</key>
+	<string>Developer File Type Declarations</string>
+	<key>CFBundleVersion</key>
+	<string>1.0</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleExecutable</key>
+	<string>DevFileTypes</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>LSMinimumSystemVersion</key>
+	<string>11.0</string>
+	<key>LSBackgroundOnly</key>
+	<true/>
+	<!-- Exported declarations have HIGHER priority than system declarations -->
+	<!-- Use these ONLY for extensions where macOS has a wrong system mapping -->
+	<key>UTExportedTypeDeclarations</key>
+	<array>
+		<!-- .ts — Override system's public.mpeg-2-transport-stream → TypeScript -->
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>dev.devfiletypes.typescript-source</string>
+			<key>UTTypeDescription</key>
+			<string>TypeScript Source</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.source-code</string>
+				<string>public.plain-text</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>ts</string>
+					<string>mts</string>
+					<string>cts</string>
+				</array>
+				<key>public.mime-type</key>
+				<array>
+					<string>text/typescript</string>
+				</array>
+			</dict>
+		</dict>
+
+		<!-- .r — Override system's com.apple.rez-source → R language -->
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>dev.devfiletypes.r-source</string>
+			<key>UTTypeDescription</key>
+			<string>R Source</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.source-code</string>
+				<string>public.plain-text</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>r</string>
+					<string>R</string>
+				</array>
+			</dict>
+		</dict>
+	</array>
+	<key>UTImportedTypeDeclarations</key>
+	<array>
+		<!-- ============================================================ -->
+		<!-- OVERRIDES: Extensions macOS maps to the WRONG type           -->
+		<!-- ============================================================ -->
+
+		<!-- ============================================================ -->
+		<!-- DECLARATIONS: Extensions macOS doesn't know about at all     -->
+		<!-- ============================================================ -->
+
+		<!-- TypeScript / JavaScript variants -->
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>dev.devfiletypes.tsx-source</string>
+			<key>UTTypeDescription</key>
+			<string>TypeScript JSX Source</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.source-code</string>
+				<string>public.plain-text</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>tsx</string>
+				</array>
+			</dict>
+		</dict>
+
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>dev.devfiletypes.jsx-source</string>
+			<key>UTTypeDescription</key>
+			<string>JavaScript JSX Source</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.source-code</string>
+				<string>public.plain-text</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>jsx</string>
+				</array>
+			</dict>
+		</dict>
+
+		<!-- Web framework files -->
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>dev.devfiletypes.vue-source</string>
+			<key>UTTypeDescription</key>
+			<string>Vue Component</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.source-code</string>
+				<string>public.plain-text</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>vue</string>
+				</array>
+			</dict>
+		</dict>
+
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>dev.devfiletypes.svelte-source</string>
+			<key>UTTypeDescription</key>
+			<string>Svelte Component</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.source-code</string>
+				<string>public.plain-text</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>svelte</string>
+				</array>
+			</dict>
+		</dict>
+
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>dev.devfiletypes.astro-source</string>
+			<key>UTTypeDescription</key>
+			<string>Astro Component</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.source-code</string>
+				<string>public.plain-text</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>astro</string>
+				</array>
+			</dict>
+		</dict>
+
+		<!-- Systems languages -->
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>dev.devfiletypes.rust-source</string>
+			<key>UTTypeDescription</key>
+			<string>Rust Source</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.source-code</string>
+				<string>public.plain-text</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>rs</string>
+				</array>
+			</dict>
+		</dict>
+
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>dev.devfiletypes.go-source</string>
+			<key>UTTypeDescription</key>
+			<string>Go Source</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.source-code</string>
+				<string>public.plain-text</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>go</string>
+				</array>
+			</dict>
+		</dict>
+
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>dev.devfiletypes.zig-source</string>
+			<key>UTTypeDescription</key>
+			<string>Zig Source</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.source-code</string>
+				<string>public.plain-text</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>zig</string>
+				</array>
+			</dict>
+		</dict>
+
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>dev.devfiletypes.nim-source</string>
+			<key>UTTypeDescription</key>
+			<string>Nim Source</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.source-code</string>
+				<string>public.plain-text</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>nim</string>
+				</array>
+			</dict>
+		</dict>
+
+		<!-- JVM languages -->
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>dev.devfiletypes.kotlin-source</string>
+			<key>UTTypeDescription</key>
+			<string>Kotlin Source</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.source-code</string>
+				<string>public.plain-text</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>kt</string>
+					<string>kts</string>
+				</array>
+			</dict>
+		</dict>
+
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>dev.devfiletypes.scala-source</string>
+			<key>UTTypeDescription</key>
+			<string>Scala Source</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.source-code</string>
+				<string>public.plain-text</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>scala</string>
+					<string>sc</string>
+				</array>
+			</dict>
+		</dict>
+
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>dev.devfiletypes.groovy-source</string>
+			<key>UTTypeDescription</key>
+			<string>Groovy Source</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.source-code</string>
+				<string>public.plain-text</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>groovy</string>
+					<string>gvy</string>
+				</array>
+			</dict>
+		</dict>
+
+		<!-- .NET / C# / F# -->
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>dev.devfiletypes.csharp-source</string>
+			<key>UTTypeDescription</key>
+			<string>C# Source</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.source-code</string>
+				<string>public.plain-text</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>cs</string>
+				</array>
+			</dict>
+		</dict>
+
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>dev.devfiletypes.fsharp-source</string>
+			<key>UTTypeDescription</key>
+			<string>F# Source</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.source-code</string>
+				<string>public.plain-text</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>fs</string>
+					<string>fsi</string>
+					<string>fsx</string>
+				</array>
+			</dict>
+		</dict>
+
+		<!-- Mobile -->
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>dev.devfiletypes.dart-source</string>
+			<key>UTTypeDescription</key>
+			<string>Dart Source</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.source-code</string>
+				<string>public.plain-text</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>dart</string>
+				</array>
+			</dict>
+		</dict>
+
+		<!-- Scripting languages -->
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>dev.devfiletypes.lua-source</string>
+			<key>UTTypeDescription</key>
+			<string>Lua Source</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.source-code</string>
+				<string>public.plain-text</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>lua</string>
+				</array>
+			</dict>
+		</dict>
+
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>dev.devfiletypes.coffeescript-source</string>
+			<key>UTTypeDescription</key>
+			<string>CoffeeScript Source</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.source-code</string>
+				<string>public.plain-text</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>coffee</string>
+				</array>
+			</dict>
+		</dict>
+
+		<!-- Functional languages -->
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>dev.devfiletypes.elixir-source</string>
+			<key>UTTypeDescription</key>
+			<string>Elixir Source</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.source-code</string>
+				<string>public.plain-text</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>ex</string>
+					<string>exs</string>
+				</array>
+			</dict>
+		</dict>
+
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>dev.devfiletypes.elm-source</string>
+			<key>UTTypeDescription</key>
+			<string>Elm Source</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.source-code</string>
+				<string>public.plain-text</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>elm</string>
+				</array>
+			</dict>
+		</dict>
+
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>dev.devfiletypes.haskell-source</string>
+			<key>UTTypeDescription</key>
+			<string>Haskell Source</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.source-code</string>
+				<string>public.plain-text</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>hs</string>
+					<string>lhs</string>
+				</array>
+			</dict>
+		</dict>
+
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>dev.devfiletypes.ocaml-source</string>
+			<key>UTTypeDescription</key>
+			<string>OCaml Source</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.source-code</string>
+				<string>public.plain-text</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>ml</string>
+					<string>mli</string>
+				</array>
+			</dict>
+		</dict>
+
+		<!-- Config / IaC languages -->
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>dev.devfiletypes.terraform-source</string>
+			<key>UTTypeDescription</key>
+			<string>Terraform Configuration</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.source-code</string>
+				<string>public.plain-text</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>tf</string>
+					<string>tfvars</string>
+				</array>
+			</dict>
+		</dict>
+
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>dev.devfiletypes.hcl-source</string>
+			<key>UTTypeDescription</key>
+			<string>HCL Configuration</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.source-code</string>
+				<string>public.plain-text</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>hcl</string>
+				</array>
+			</dict>
+		</dict>
+
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>dev.devfiletypes.toml-source</string>
+			<key>UTTypeDescription</key>
+			<string>TOML Configuration</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.plain-text</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>toml</string>
+				</array>
+			</dict>
+		</dict>
+
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>dev.devfiletypes.nix-source</string>
+			<key>UTTypeDescription</key>
+			<string>Nix Expression</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.source-code</string>
+				<string>public.plain-text</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>nix</string>
+				</array>
+			</dict>
+		</dict>
+
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>dev.devfiletypes.dhall-source</string>
+			<key>UTTypeDescription</key>
+			<string>Dhall Configuration</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.source-code</string>
+				<string>public.plain-text</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>dhall</string>
+				</array>
+			</dict>
+		</dict>
+
+		<!-- Schema / API definition languages -->
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>dev.devfiletypes.graphql-source</string>
+			<key>UTTypeDescription</key>
+			<string>GraphQL Schema</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.source-code</string>
+				<string>public.plain-text</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>graphql</string>
+					<string>gql</string>
+				</array>
+			</dict>
+		</dict>
+
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>dev.devfiletypes.protobuf-source</string>
+			<key>UTTypeDescription</key>
+			<string>Protocol Buffer Definition</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.source-code</string>
+				<string>public.plain-text</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>proto</string>
+				</array>
+			</dict>
+		</dict>
+
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>dev.devfiletypes.prisma-source</string>
+			<key>UTTypeDescription</key>
+			<string>Prisma Schema</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.source-code</string>
+				<string>public.plain-text</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>prisma</string>
+				</array>
+			</dict>
+		</dict>
+
+		<!-- Stylesheet languages -->
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>dev.devfiletypes.sass-source</string>
+			<key>UTTypeDescription</key>
+			<string>Sass Stylesheet</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.source-code</string>
+				<string>public.plain-text</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>sass</string>
+				</array>
+			</dict>
+		</dict>
+
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>dev.devfiletypes.scss-source</string>
+			<key>UTTypeDescription</key>
+			<string>SCSS Stylesheet</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.source-code</string>
+				<string>public.plain-text</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>scss</string>
+				</array>
+			</dict>
+		</dict>
+
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>dev.devfiletypes.less-source</string>
+			<key>UTTypeDescription</key>
+			<string>Less Stylesheet</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.source-code</string>
+				<string>public.plain-text</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>less</string>
+				</array>
+			</dict>
+		</dict>
+
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>dev.devfiletypes.stylus-source</string>
+			<key>UTTypeDescription</key>
+			<string>Stylus Stylesheet</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.source-code</string>
+				<string>public.plain-text</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>styl</string>
+				</array>
+			</dict>
+		</dict>
+
+		<!-- Template languages -->
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>dev.devfiletypes.jade-source</string>
+			<key>UTTypeDescription</key>
+			<string>Jade/Pug Template</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.source-code</string>
+				<string>public.plain-text</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>jade</string>
+					<string>pug</string>
+				</array>
+			</dict>
+		</dict>
+
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>dev.devfiletypes.ejs-source</string>
+			<key>UTTypeDescription</key>
+			<string>EJS Template</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.source-code</string>
+				<string>public.plain-text</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>ejs</string>
+				</array>
+			</dict>
+		</dict>
+
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>dev.devfiletypes.handlebars-source</string>
+			<key>UTTypeDescription</key>
+			<string>Handlebars Template</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.source-code</string>
+				<string>public.plain-text</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>hbs</string>
+					<string>handlebars</string>
+				</array>
+			</dict>
+		</dict>
+
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>dev.devfiletypes.mustache-source</string>
+			<key>UTTypeDescription</key>
+			<string>Mustache Template</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.source-code</string>
+				<string>public.plain-text</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>mustache</string>
+				</array>
+			</dict>
+		</dict>
+
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>dev.devfiletypes.twig-source</string>
+			<key>UTTypeDescription</key>
+			<string>Twig Template</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.source-code</string>
+				<string>public.plain-text</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>twig</string>
+				</array>
+			</dict>
+		</dict>
+
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>dev.devfiletypes.jinja-source</string>
+			<key>UTTypeDescription</key>
+			<string>Jinja Template</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.source-code</string>
+				<string>public.plain-text</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>jinja</string>
+					<string>jinja2</string>
+					<string>j2</string>
+				</array>
+			</dict>
+		</dict>
+
+		<!-- Markdown variants -->
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>dev.devfiletypes.mdx-source</string>
+			<key>UTTypeDescription</key>
+			<string>MDX Document</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.plain-text</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>mdx</string>
+				</array>
+			</dict>
+		</dict>
+
+		<!-- Notebook / data formats -->
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>dev.devfiletypes.jupyter-notebook</string>
+			<key>UTTypeDescription</key>
+			<string>Jupyter Notebook</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.json</string>
+				<string>public.plain-text</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>ipynb</string>
+				</array>
+			</dict>
+		</dict>
+
+	</array>
+</dict>
+</plist>
