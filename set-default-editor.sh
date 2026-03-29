@@ -81,6 +81,17 @@ usage() {
     echo "Or pass a raw bundle ID (e.g., com.microsoft.VSCode)."
 }
 
+require_tty() {
+    if ! { exec 3<> /dev/tty; } 2>/dev/null; then
+        echo "Error: Interactive mode requires a controlling terminal." >&2
+        echo "Use ./set-default-editor.sh <editor> for non-interactive mode." >&2
+        exit 1
+    fi
+
+    exec 3<&-
+    exec 3>&-
+}
+
 check_macos() {
     if [ "$(uname -s)" != "Darwin" ]; then
         echo "Error: This tool is macOS-only. Detected OS: $(uname -s)"
@@ -196,8 +207,8 @@ get_handler() {
 
     local app_name=""
     local bundle_id=""
-    app_name="$(echo "$output" | head -1)"
-    bundle_id="$(echo "$output" | tail -1)"
+    app_name="$(printf '%s\n' "$output" | sed -n '1p')"
+    bundle_id="$(printf '%s\n' "$output" | sed -n '3p')"
 
     if [ -z "$bundle_id" ] || [ -z "$app_name" ]; then
         return 1
@@ -219,6 +230,35 @@ KNOWN_EDITOR_EXTS=""
 APPLE_DEFAULT_COUNT=0
 AMBIGUOUS_COUNT=0
 KNOWN_EDITOR_COUNT=0
+
+backup_entries_for_extensions() {
+    local entries="$1"
+    local backup=""
+    local line=""
+
+    while IFS= read -r line; do
+        [ -z "$line" ] && continue
+
+        local ext="${line%%	*}"
+        local handler=""
+        handler="$(get_handler "$ext")" || true
+
+        if [ -z "$handler" ]; then
+            backup="${backup}${ext}	(none)	(none)
+"
+            continue
+        fi
+
+        local app_name="${handler%%	*}"
+        local bundle_id="${handler##*	}"
+        backup="${backup}${ext}	${app_name}	${bundle_id}
+"
+    done <<EOF
+$entries
+EOF
+
+    printf '%s' "$backup"
+}
 
 categorize_extensions() {
     APPLE_DEFAULTS=""
@@ -289,11 +329,24 @@ EOF
 save_backup() {
     local path="$1"
     local entries="$2"
+    local dir=""
+    local tmp_path=""
+
+    dir="$(dirname "$path")"
+    if [ ! -d "$dir" ]; then
+        echo "Error: Backup directory does not exist: $dir" >&2
+        return 1
+    fi
+
+    tmp_path="$(mktemp "$dir/.devfiletypes-editor-backup.XXXXXX")" || {
+        echo "Error: Failed to create temporary backup file in $dir" >&2
+        return 1
+    }
 
     {
         echo "# devfiletypes editor backup"
         echo "# Created: $(date -u +%Y-%m-%dT%H:%M:%S)"
-        echo "# Restore: ./set-default-editor.sh --restore $path"
+        echo "# Restore: ./set-default-editor.sh --restore \"$path\""
 
         local line=""
         while IFS= read -r line; do
@@ -307,7 +360,79 @@ save_backup() {
         done <<EOF
 $entries
 EOF
-    } > "$path"
+    } > "$tmp_path" || {
+        rm -f "$tmp_path"
+        echo "Error: Failed to write backup file: $path" >&2
+        return 1
+    }
+
+    if ! mv "$tmp_path" "$path"; then
+        rm -f "$tmp_path"
+        echo "Error: Failed to move backup file into place: $path" >&2
+        return 1
+    fi
+
+    return 0
+}
+
+merge_backup() {
+    local path="$1"
+    local entries="$2"
+    local dir=""
+    local tmp_path=""
+    local line=""
+
+    if [ ! -f "$path" ]; then
+        save_backup "$path" "$entries"
+        return $?
+    fi
+
+    if [ ! -r "$path" ] || [ ! -w "$path" ]; then
+        echo "Error: Backup file is not readable and writable: $path" >&2
+        return 1
+    fi
+
+    dir="$(dirname "$path")"
+    tmp_path="$(mktemp "$dir/.devfiletypes-editor-backup.XXXXXX")" || {
+        echo "Error: Failed to create temporary backup file in $dir" >&2
+        return 1
+    }
+
+    if ! cp "$path" "$tmp_path"; then
+        rm -f "$tmp_path"
+        echo "Error: Failed to copy existing backup file: $path" >&2
+        return 1
+    fi
+
+    while IFS= read -r line; do
+        [ -z "$line" ] && continue
+
+        local ext="${line%%	*}"
+        local rest="${line#*	}"
+        local bundle_id="${rest##*	}"
+
+        if [ "$bundle_id" = "(none)" ]; then
+            continue
+        fi
+
+        if ! grep -q "^\.${ext} " "$tmp_path"; then
+            printf '.%s %s\n' "$ext" "$bundle_id" >> "$tmp_path" || {
+                rm -f "$tmp_path"
+                echo "Error: Failed to update backup file: $path" >&2
+                return 1
+            }
+        fi
+    done <<EOF
+$entries
+EOF
+
+    if ! mv "$tmp_path" "$path"; then
+        rm -f "$tmp_path"
+        echo "Error: Failed to move updated backup into place: $path" >&2
+        return 1
+    fi
+
+    return 0
 }
 
 do_backup() {
@@ -330,7 +455,10 @@ do_backup() {
 "
     done
 
-    save_backup "$path" "$all_entries"
+    if ! save_backup "$path" "$all_entries"; then
+        return 1
+    fi
+
     echo "Done! Saved handlers for all managed extensions to $path"
 }
 
@@ -339,7 +467,12 @@ do_restore() {
 
     if [ ! -f "$path" ]; then
         echo "Error: Backup file not found: $path"
-        exit 1
+        return 1
+    fi
+
+    if [ ! -r "$path" ]; then
+        echo "Error: Backup file is not readable: $path"
+        return 1
     fi
 
     echo "Restoring handlers from $path..."
@@ -366,9 +499,18 @@ do_restore() {
         fi
     done < "$path"
 
+    if [ $? -ne 0 ]; then
+        echo "Error: Failed to read backup file: $path"
+        return 1
+    fi
+
     echo "Done! Restored $count extensions."
 
-    return "$failures"
+    if [ "$failures" -gt 0 ]; then
+        return 1
+    fi
+
+    return 0
 }
 
 do_revert() {
@@ -379,13 +521,14 @@ do_revert() {
         exit 1
     fi
 
-    local restore_failures=0
-    do_restore "$BACKUP_FILE" || restore_failures=$?
-
-    if [ "$restore_failures" -gt 0 ]; then
+    if ! do_restore "$BACKUP_FILE"; then
         echo "Backup preserved at $BACKUP_FILE (some restorations failed)."
+        return 1
     else
-        rm -f "$BACKUP_FILE"
+        if ! rm -f "$BACKUP_FILE"; then
+            echo "Error: Failed to remove backup file: $BACKUP_FILE"
+            return 1
+        fi
         echo "Backup file removed."
     fi
 }
@@ -401,7 +544,7 @@ do_check() {
     categorize_extensions
 
     if [ $APPLE_DEFAULT_COUNT -gt 0 ]; then
-        echo "Apple defaults (would be changed):"
+        echo "Apple/no-handler defaults (would be changed):"
         print_bucket "$APPLE_DEFAULTS"
         echo ""
     fi
@@ -419,7 +562,7 @@ do_check() {
     fi
 
     if [ $APPLE_DEFAULT_COUNT -gt 0 ]; then
-        echo "To fix the $APPLE_DEFAULT_COUNT extensions with Apple defaults, run:"
+        echo "To fix the $APPLE_DEFAULT_COUNT extensions with Apple/no-handler defaults, run:"
         echo "  ./set-default-editor.sh vscode"
     else
         echo "All extensions are already using third-party editors."
@@ -475,12 +618,17 @@ EOF
         return
     fi
 
-    # Save backup (preserve original if it exists)
+    # Save backup before mutating handlers. Preserve original entries and add
+    # any newly changed extensions from later runs.
+    local backup_entries=""
+    backup_entries="$(backup_entries_for_extensions "$APPLE_DEFAULTS")"
+    if ! merge_backup "$BACKUP_FILE" "$backup_entries"; then
+        echo "Aborting: failed to prepare backup at $BACKUP_FILE"
+        exit 1
+    fi
+
     if [ -f "$BACKUP_FILE" ]; then
-        echo "Backup already exists at $BACKUP_FILE (preserving original)"
-    else
-        save_backup "$BACKUP_FILE" "$APPLE_DEFAULTS"
-        echo "Saved backup to $BACKUP_FILE"
+        echo "Backup ready at $BACKUP_FILE"
     fi
 
     echo "Updating $APPLE_DEFAULT_COUNT extensions..."
@@ -512,6 +660,8 @@ EOF
 # ---------------------------------------------------------------------------
 
 do_set_interactive() {
+    require_tty
+
     echo "=== Set Default Editor for Developer Files ==="
     echo ""
     echo "Scanning current file associations..."
@@ -521,7 +671,7 @@ do_set_interactive() {
 
     # Show Apple defaults
     if [ $APPLE_DEFAULT_COUNT -gt 0 ]; then
-        echo "Apple defaults (will be updated):"
+        echo "Apple/no-handler defaults (will be updated):"
         print_bucket "$APPLE_DEFAULTS"
         echo ""
     fi
@@ -540,9 +690,12 @@ do_set_interactive() {
             local ext="${line%%	*}"
             local rest="${line#*	}"
             local app_name="${rest%%	*}"
-            local bundle_id="${rest##*	}"
             printf "  Override .%s (currently %s)? [Y/n]: " "$ext" "$app_name"
-            read -r answer < /dev/tty
+            if ! read -r answer < /dev/tty; then
+                echo "" >&2
+                echo "Error: Failed to read from terminal." >&2
+                exit 1
+            fi
             case "${answer:-Y}" in
                 [Yy]|[Yy]es|"")
                     ambiguous_to_set="${ambiguous_to_set}${line}
@@ -574,7 +727,7 @@ EOF
 
     # Detect installed editors and prompt for choice
     local bundle_id=""
-    bundle_id="$(prompt_editor_choice)"
+    bundle_id="$(prompt_editor_choice)" || exit 1
     if [ -z "$bundle_id" ]; then
         echo "No editor selected. Aborting."
         exit 1
@@ -585,13 +738,18 @@ EOF
 
     echo ""
 
-    # Save backup (preserve original if it exists)
+    # Save backup before mutating handlers. Preserve original entries and add
+    # any newly changed extensions from later runs.
     local all_to_backup="${APPLE_DEFAULTS}${ambiguous_to_set}"
+    local backup_entries=""
+    backup_entries="$(backup_entries_for_extensions "$all_to_backup")"
+    if ! merge_backup "$BACKUP_FILE" "$backup_entries"; then
+        echo "Aborting: failed to prepare backup at $BACKUP_FILE"
+        exit 1
+    fi
+
     if [ -f "$BACKUP_FILE" ]; then
-        echo "Backup already exists at $BACKUP_FILE (preserving original)"
-    else
-        save_backup "$BACKUP_FILE" "$all_to_backup"
-        echo "Saved backup to $BACKUP_FILE"
+        echo "Backup ready at $BACKUP_FILE"
     fi
 
     echo "Updating $total_to_set extensions..."
@@ -643,10 +801,14 @@ $EDITOR_SHORTHANDS
 EOF
 
     if [ $count -eq 0 ]; then
-        echo "No known editors detected in /Applications." >&2
+        echo "No known editors detected via Spotlight." >&2
         printf "Enter a bundle ID manually: " >&2
         local manual_id=""
-        read -r manual_id < /dev/tty
+        if ! read -r manual_id < /dev/tty; then
+            echo "" >&2
+            echo "Error: Failed to read from terminal." >&2
+            return 1
+        fi
         printf '%s\n' "$manual_id"
         return
     fi
@@ -667,7 +829,11 @@ EOF
     echo "" >&2
     printf "Enter choice [1]: " >&2
     local choice=""
-    read -r choice < /dev/tty
+    if ! read -r choice < /dev/tty; then
+        echo "" >&2
+        echo "Error: Failed to read from terminal." >&2
+        return 1
+    fi
     choice="${choice:-1}"
 
     # Find the chosen entry

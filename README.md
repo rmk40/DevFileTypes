@@ -141,7 +141,7 @@ These tools operate at different layers. Quick Look providers fix previews — p
 
 ### set-default-editor.sh
 
-A standalone tool that uses duti to set your preferred editor as the default handler for developer file extensions. It covers all extensions managed by DevFileTypes plus common ones like `.json`, `.yaml`, `.py`, `.rb`, `.sql`, and others that macOS often assigns to the wrong app. It only overrides extensions that currently have macOS default handlers or no handler at all — extensions you've already configured with a third-party editor are left alone.
+A standalone tool that uses duti to set your preferred editor as the default handler for developer file extensions. It covers all extensions managed by DevFileTypes plus common ones like `.json`, `.yaml`, `.py`, `.rb`, `.sql`, and others that macOS often assigns to the wrong app. By default it only overrides extensions that currently have macOS default handlers or no handler at all. In interactive mode, it can also offer to replace obviously wrong third-party handlers after asking first.
 
 I recommend [Zed](https://zed.dev) — it's fast, lightweight, native to macOS, and has built-in syntax highlighting for hundreds of languages. But any editor works.
 
@@ -154,7 +154,7 @@ I recommend [Zed](https://zed.dev) — it's fast, lightweight, native to macOS, 
 
 Supported editor shorthands: `zed`, `vscode`, `cursor`, `sublime`, `nova`, `webstorm`, `intellij`. You can also pass a raw bundle ID (e.g., `dev.zed.Zed`).
 
-The script saves a backup of the original handlers to `~/.devfiletypes-editor-backup` on first run, so `--revert` restores previously assigned handlers. Extensions that had no handler before cannot be unset by duti. You can also manage backups explicitly:
+The script saves a backup to `~/.devfiletypes-editor-backup` before changing handlers. It preserves the original entries it has already seen, and later runs append any newly changed extensions so `--revert` can restore them too. Extensions that had no handler before cannot be unset by duti. You can also manage backups explicitly:
 
 ```bash
 ./set-default-editor.sh --backup ~/my-backup    # Save current state
